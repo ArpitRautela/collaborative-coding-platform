@@ -11,11 +11,12 @@ const EditorPage = () => {
     useEffect(() => {
         const init = async () => {
             socketRef.current = await initSocket();
-            // socketRef.current.emit(ACTION.JOIN, {
+            // socketRef.current.emit(ACTION.JOIN, { 
             //     roomId,
-            //     username  : Location.state?.username,
+            //     userName: location.state?.userName,
             // });
         }
+        init();
     }, []);
     const [clients, setClients] = useState([
         { socketId: 1, userName: 'Arpit Rautela' },
