@@ -1,20 +1,31 @@
 import React, { useState,useRef, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import Logo from '../assets/CodePair_Logo.png';
 import Client from '../components/Client';
 import Editor from '../components/Editor';
 import { initSocket } from '../socket';
 import ACTION from '../Actions';
-import { useLocation } from 'react-router-dom';
+import { useLocation , useNavigate , Navigate } from 'react-router-dom';
 
 const EditorPage = () => {
     const socketRef = useRef(null);
+    const location = useLocation();
+    const reactNavigator = useNavigate();
     useEffect(() => {
         const init = async () => {
             socketRef.current = await initSocket();
-            // socketRef.current.emit(ACTION.JOIN, { 
-            //     roomId,
-            //     userName: location.state?.userName,
-            // });
+            socketRef.current.on('connect_error',(err) =>handleError(err));
+            socketRef.current.on('connect_failed',(err) =>handleError(err));
+
+            function handleError(e){
+                console.log('socket error',e);
+                toast.error('socket connection failed , try again later');
+                reactNavigator('/');
+            }
+            socketRef.current.emit(ACTION.JOIN, { 
+                roomId,
+                userName: location.state?.userName,
+            });
         }
         init();
     }, []);
@@ -23,6 +34,9 @@ const EditorPage = () => {
         { socketId: 2, userName: 'Apurva Mukherjee' },
         { socketId: 3,userName: 'Swastik Mukherjee'}
     ]);
+    if(!location.state){
+        return <Navigate to = "/" />;
+    }
 
     return (
         <div className='min-h-screen bg-gradient-to-r from-slate-900 to-slate-700 flex'>
