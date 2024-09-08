@@ -95,6 +95,5 @@ const EditorPage = () => {
     </div>
   );
 };
-//hi//
 
 export default EditorPage;
